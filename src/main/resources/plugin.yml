@@ -1,0 +1,10 @@
+name: BlueFriends
+version: 1.0.0
+main: BlueFriends
+softdepend:
+  - VexView
+  - ProtocolLib
+  - PlaceholderAPI
+authors: [bluesadi]
+commands:
+  bfreload:
