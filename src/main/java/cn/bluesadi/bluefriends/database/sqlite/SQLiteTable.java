@@ -3,11 +3,11 @@ package cn.bluesadi.bluefriends.database.sqlite;
 import cn.bluesadi.bluefriends.database.Table;
 import cn.bluesadi.bluefriends.database.config.DBLogger;
 import cn.bluesadi.bluefriends.database.config.Lang;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import static cn.bluesadi.bluefriends.database.config.Lang.*;
 
 public class SQLiteTable extends Table {
     private Connection connection;
@@ -43,7 +43,7 @@ public class SQLiteTable extends Table {
                 }
             }
         }catch (SQLException e){
-            DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
         return false;

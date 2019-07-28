@@ -1,6 +1,6 @@
 name: BlueFriends
 version: 1.0.0
-main: BlueFriends
+main: cn.bluesadi.bluefriends.BlueFriends
 softdepend:
   - VexView
   - ProtocolLib
@@ -8,3 +8,37 @@ softdepend:
 authors: [bluesadi]
 commands:
   bfreload:
+  friend:
+  bfopen:
+  bfadmin:
+  person:
+
+permissions:
+  bluefriends.person.*:
+    description: 一般情况下玩家使用的指令
+    children:
+      bluefriends.person.set.qq: true
+      bluefriends.person.set.email: true
+      bluefriends.person.set.sex: true
+      bluefriends.person.set.nickname: true
+      bluefriends.person.set.head: true
+      bluefriends.person.set.headborder: true
+      bluefriends.person.set.signature: true
+      bluefriends.person.editbox: true
+      bluefriends.mail.view: true
+      bluefriends.mail.delete: true
+      bluefriends.mail.read: true
+      bluefriends.mail.items: true
+      bluefriends.message.view: true
+      bluefriends.message.delete: true
+  bluefriends.friend.*:
+    description: 一般情况下玩家使用的指令
+    children:
+      bluefriends.friend.apply: true
+      bluefriends.friend.delete: true
+      bluefriends.friend.query: true
+      bluefriends.friend.accept: true
+      bluefriends.friend.reject: true
+  bluefriends.open.*:
+    description: 一般情况下玩家使用的指令
+    default: true

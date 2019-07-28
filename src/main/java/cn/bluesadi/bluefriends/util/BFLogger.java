@@ -2,6 +2,7 @@ package cn.bluesadi.bluefriends.util;
 
 import cn.bluesadi.bluefriends.BlueFriends;
 import cn.bluesadi.bluefriends.config.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.File;
@@ -12,8 +13,8 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class BFLogger {
-    private static final Logger LOGGER = BlueFriends.getInstance().getLogger();
-    private static final String INFO_PREFIX = ChatColor.GREEN + "§bINFO>§a";
+    private static final Logger LOGGER = Bukkit.getLogger();
+    private static final String INFO_PREFIX = ChatColor.GREEN.toString();
     private static final String DEBUG_PREFIX = ChatColor.BLUE + "§bDEBUG>§c";
     private static final String ERROR_PREFIX = ChatColor.DARK_RED + "§bERROR>§4";
 
@@ -34,6 +35,8 @@ public class BFLogger {
         try {
             String fileName =BFCalendar.getDate(Config.DATE_FORMAT)+".yml";
             error(msg+"(报错记录已保存至../errors/"+fileName+")");
+            File folder = new File(BlueFriends.getInstance().getDataFolder(),"errors");
+            folder.mkdirs();
             File targetFile = new File(BlueFriends.getInstance().getDataFolder(), "errors/" + fileName);
             targetFile.createNewFile();
             FileOutputStream out = new FileOutputStream(targetFile);

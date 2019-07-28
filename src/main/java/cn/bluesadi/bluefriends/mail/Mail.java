@@ -1,10 +1,10 @@
 package cn.bluesadi.bluefriends.mail;
 
 import cn.bluesadi.bluefriends.BFDatabase;
+import cn.bluesadi.bluefriends.BlueFriends;
 import cn.bluesadi.bluefriends.database.Row;
 import cn.bluesadi.bluefriends.player.BFPlayer;
 import org.bukkit.inventory.ItemStack;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import static cn.bluesadi.bluefriends.mail.MailAttributes.*;
@@ -12,21 +12,11 @@ import static cn.bluesadi.bluefriends.mail.MailAttributes.*;
 public class Mail {
 
     private UUID uuid;
-    private Row sqlRow;
-    private String subject;
-    private String date;
-    private List<ItemStack> items;
-    private String content;
-    private boolean read;
+    private Row row;
 
     public Mail(java.util.UUID uuid){
         this.uuid = uuid;
-        this.sqlRow = BFDatabase.getInstance().getMailTable().getRow(uuid.toString());
-        this.subject = sqlRow.getValue(SUBJECT).getString();
-        this.date = sqlRow.getValue(DATE).getString();
-        this.items = sqlRow.getValue(ITEMS).getItemStackList();
-        this.content = sqlRow.getValue(CONTENT).getString();
-        this.read = sqlRow.getValue(READ).getBoolean();
+        this.row = BlueFriends.getBFDatabase().getMailTable().getRow(uuid.toString());
     }
 
     public UUID getUUID() {
@@ -34,31 +24,45 @@ public class Mail {
     }
 
     public String getDate() {
-        return date;
+        return row.getValue(DATE).getString();
     }
 
     public String getContent() {
-        return content;
+        return row.getValue(CONTENT).getString();
     }
 
     public List<ItemStack> getItems() {
-        return items;
+        return row.getValue(ITEMS).getItemStackList();
     }
 
     public String getSubject() {
-        return subject;
+        return row.getValue(SUBJECT).getString();
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isRead(BFPlayer bfPlayer) {
+        return row.getValue(READ).getStringList().contains(bfPlayer.getUUID().toString());
     }
 
-    public void setRead(boolean read) {
-        sqlRow.set(READ,read);
+    public void setRead(BFPlayer bfPlayer) {
+        List<String> readList = row.getValue(READ).getStringList();
+        readList.remove(bfPlayer.getUUID().toString());
+        readList.add(bfPlayer.getUUID().toString());
+        row.set(READ,readList);
     }
 
-    public void clearItems(){
-        sqlRow.set(ITEMS,new ArrayList<>());
+    public boolean hasGotItems(BFPlayer bfPlayer){
+        return row.getValue(GOT_ITEMS).getStringList().contains(bfPlayer.getUUID().toString());
+    }
+
+    public void setGotItems(BFPlayer bfPlayer){
+        List<String> gotList = row.getValue(GOT_ITEMS).getStringList();
+        gotList.remove(bfPlayer.getUUID().toString());
+        gotList.add(bfPlayer.getUUID().toString());
+        row.set(GOT_ITEMS,gotList);
+    }
+
+    public void setDate(String date){
+        row.set(DATE,date);
     }
 
     public void delete(){

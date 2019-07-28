@@ -8,15 +8,16 @@ import cn.bluesadi.bluefriends.player.BFPlayer;
 import cn.bluesadi.bluefriends.util.BFCalendar;
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import static cn.bluesadi.bluefriends.mail.MailAttributes.*;
 
 public class MailEditor {
     private static MailEditor instance = new MailEditor();
-    private String subject;
+    private String subject = "请输入主题";
     private List<ItemStack> items = new ArrayList<>();
-    private String content;
+    private String content = "请输入正文";
 
     public static MailEditor getInstance() {
         return instance;
@@ -65,9 +66,9 @@ public class MailEditor {
      * 清除邮件编辑器的内容
      * */
     public void clear(){
-        subject = null;
+        subject = "请输入主题";
         items = new ArrayList<>();
-        content = null;
+        content = "请输入正文";
     }
 
     /**
@@ -79,58 +80,13 @@ public class MailEditor {
         Row sqlRow = BFDatabase.getInstance().getMailTable().getRow(uuid.toString());
         if(checkNull()){
             sqlRow.set(SUBJECT,subject);
-            sqlRow.set(DATE,"暂未设置");
+            sqlRow.set(DATE,"暂未发送");
             sqlRow.set(ITEMS,items);
             sqlRow.set(CONTENT,content);
-            sqlRow.set(READ,false);
+            sqlRow.set(READ, "");
+            sqlRow.set(GOT_ITEMS,Collections.EMPTY_LIST);
         }
         return false;
     }
-
-    /**
-     * 将这封邮件发给某个特定的玩家
-     * @param bfPlayer 玩家
-     * */
-    public boolean send(BFPlayer bfPlayer){
-        UUID uuid = java.util.UUID.randomUUID();
-        Row sqlRow = BFDatabase.getInstance().getMailTable().getRow(uuid.toString());
-        if(checkNull()){
-            sqlRow.set(SUBJECT,subject);
-            sqlRow.set(DATE, BFCalendar.getDate(Config.DATE_FORMAT));
-            sqlRow.set(ITEMS,items);
-            sqlRow.set(CONTENT,content);
-            sqlRow.set(READ,false);
-            bfPlayer.addMail(uuid);
-        }
-        return false;
-    }
-
-    /**
-     * 将这封邮件发给所有玩家
-     * */
-    public boolean sendToAll(){
-        if(checkNull()) {
-            BlueFriends.getBFPlayers().forEach(bfPlayer -> send(bfPlayer));
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 将这封邮件发给所有玩家满足指定条件的玩家
-     * */
-    public boolean sendIf(String condition){
-        ReceiveCondition receiveCondition = new ReceiveCondition(condition);
-        if(checkNull()){
-            BlueFriends.getBFPlayers().forEach(bfPlayer -> {
-                if(receiveCondition.test(bfPlayer)){
-                    send(bfPlayer);
-                }
-            });
-            return true;
-        }
-        return false;
-    }
-
 
 }

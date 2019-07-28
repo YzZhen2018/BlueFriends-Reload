@@ -55,7 +55,7 @@ public class Schema {
                 return SQLiteTable.connect(connection,table);
             }
         }else{
-            throw new IllegalArgumentException(TABLE_NOT_FOUND+table);
+            throw new IllegalArgumentException(UNKNOWN_ERROR);
         }
     }
     /**
@@ -67,7 +67,7 @@ public class Schema {
      * */
     public boolean createTable(String table,String... values){
         if(values.length <= 0){
-            throw new IllegalArgumentException(ERROR_COLUMN_SIZE);
+            throw new IllegalArgumentException(UNKNOWN_ERROR);
         }
         try{
             if(existsTable(table)){
@@ -101,7 +101,7 @@ public class Schema {
                 return s;
             }
         }catch (SQLException e){
-            DBLogger.error(ERROR_CREATE_TABLE);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
             return false;
         }
@@ -131,7 +131,7 @@ public class Schema {
         try {
             connection.close();
         }catch (SQLException e){
-            DBLogger.error(Lang.ERROR_CLOSE_CONNECTION);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
     }

@@ -4,10 +4,10 @@ import cn.bluesadi.bluefriends.gui.BluesGui;
 import lk.vexview.gui.components.VexComponents;
 import lk.vexview.gui.components.VexHoverText;
 import lk.vexview.gui.components.VexImage;
-
+import java.util.Collections;
 import java.util.List;
 
-public class BluesImage extends BluesComponent{
+public class BluesImage extends BluesComponent {
 
     private int w;
     private int h;
@@ -27,12 +27,11 @@ public class BluesImage extends BluesComponent{
         this.url = url;
     }
 
-    @Override
-    public void addToVexComponents(List<VexComponents> components) {
+    public List<VexComponents> asVexComponents(){
         if(hoverText == null){
-            components.add(new VexImage(url,x,y,w,h));
+            return Collections.singletonList(new VexImage(setPlaceholder(url),x,y,w,h));
         }else {
-            components.add(new VexImage(url,getX(),getY(),w,h,new VexHoverText(hoverText)));
+            return Collections.singletonList(new VexImage(setPlaceholder(url),getX(),getY(),w,h,new VexHoverText(setPlaceholder(hoverText))));
         }
     }
 

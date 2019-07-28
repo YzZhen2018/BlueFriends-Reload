@@ -17,24 +17,24 @@ public class ItemSerializerUtil {
 
 	/**
 	 * 将物品反序列化为Base64数据
-	 * 
+	 *
 	 * @param items
 	 *            物品
 	 * @return 物品的序列化json
 	 */
 	public static String toString(ItemStack[] items) {
-		List<String> result = new ArrayList<>();
+		StringBuilder result = new StringBuilder();
 		for (ItemStack item : items) {
 			if (item != null) {
 				try {
-					result.add(gson.toJson(new SerializedStack(new WrappedStack(item))));
+					result.append(gson.toJson(new SerializedStack(new WrappedStack(item))));
+					result.append("~");
 				} catch (IOException e) {
 					System.err.println("错误:在序列化ItemStack时出现了异常");
-					e.printStackTrace();
 				}
 			}
 		}
-		return gson.toJson(result);
+		return result.toString();
 	}
 
 	public static String toString(ItemStack item){
@@ -53,14 +53,18 @@ public class ItemSerializerUtil {
 	 * @return 物品列表
 	 */
 	public static List<ItemStack> fromString(String paramString) {
-		List<String> base = gson.fromJson(paramString,ArrayList.class);
-		List<ItemStack> result = new ArrayList<>();
-		for (String json : base){
-			try{
-				result.add(gson.fromJson(json,SerializedStack.class).buildStack().bukkit());
-			}catch (IOException e){
-				System.err.println("错误:在反序列化ItemStack时出现了异常");
-				e.printStackTrace();
+		if(paramString == null){
+			return new ArrayList<>();
+		}
+		String[] items = paramString.split("~");
+		List<ItemStack> result = new ArrayList<ItemStack>();
+		for (String json : items) {
+			if (!json.isEmpty()) {
+				try {
+					result.add((gson.fromJson(json, SerializedStack.class)).buildStack().bukkit());
+				} catch (IOException e) {
+					System.err.println("错误:在反序列化ItemStack时出现了异常");
+				}
 			}
 		}
 		return result;

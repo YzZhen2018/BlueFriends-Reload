@@ -11,7 +11,7 @@ public class ReceiveCondition {
     private Predicate<BFPlayer> testFunction;
 
     public ReceiveCondition(String condition){
-        if(condition.matches(".+(%matches%).+")){
+        if(condition.matches(".+(\\.matches:).+")){
             String[] args = condition.split("%matches%",2);
             testFunction = bfPlayer -> {
                 left = PlaceholderAPI.setPlaceholders(bfPlayer.getOfflinePlayer(),args[0]);
@@ -54,7 +54,7 @@ public class ReceiveCondition {
                 return leftValue == rightValue;
             };
         }else{
-            testFunction = bfPlayer -> false;
+            throw new IllegalArgumentException("ReceiveCondition参数错误!");
         }
     }
 

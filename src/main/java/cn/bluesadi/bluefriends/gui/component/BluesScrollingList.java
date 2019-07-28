@@ -1,22 +1,25 @@
 package cn.bluesadi.bluefriends.gui.component;
 
 import cn.bluesadi.bluefriends.gui.BluesGui;
+import lk.vexview.gui.components.ScrollingListComponent;
 import lk.vexview.gui.components.VexComponents;
 import lk.vexview.gui.components.VexScrollingList;
+
+import java.util.Collections;
 import java.util.List;
 
 public class BluesScrollingList extends BluesComponent {
 
     private int w;
     private int h;
-    private int fullH;
-    private List<BluesScrollingListComponent> scrollingListComponents;
+    protected int fullH;
+    protected List<BluesComponent> scrollingListComponents;
 
-    public BluesScrollingList(BluesGui gui, int x, int y, int w, int h, int fullH,List<BluesScrollingListComponent> scrollingListComponents){
+    public BluesScrollingList(BluesGui gui, int x, int y, int w, int h, int fullH,List<BluesComponent> scrollingListComponents){
         super(gui,x,y);
         this.w = w;
         this.h = h;
-        this.fullH  = h;
+        this.fullH  = fullH;
         this.scrollingListComponents = scrollingListComponents;
 
     }
@@ -34,9 +37,15 @@ public class BluesScrollingList extends BluesComponent {
     }
 
     @Override
-    public void addToVexComponents(List<VexComponents> components) {
+    public List<VexComponents> asVexComponents() {
         VexScrollingList scrollingList = new VexScrollingList(x,y,w,h,fullH);
-        scrollingListComponents.forEach(s->s.getComponents().forEach(c->scrollingList.addComponent(c)));
-        components.add(scrollingList);
+        scrollingListComponents.forEach(bluesComponent -> {
+            bluesComponent.asVexComponents().forEach(vexComponents ->{
+                if(vexComponents instanceof ScrollingListComponent){
+                    scrollingList.addComponent((ScrollingListComponent)vexComponents);
+                }
+            });
+        });
+        return Collections.singletonList(scrollingList);
     }
 }

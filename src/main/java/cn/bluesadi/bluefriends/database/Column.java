@@ -1,11 +1,11 @@
 package cn.bluesadi.bluefriends.database;
 
-import cn.bluesadi.bluefriends.database.config.Lang;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+import static cn.bluesadi.bluefriends.database.config.Lang.*;
 
 public class Column {
     private Connection connection;
@@ -29,8 +29,8 @@ public class Column {
                 consumer.accept(Value.fromRawString(resultSet.getString(1)));
             }
         } catch (SQLException e) {
-            throw new IllegalArgumentException(Lang.COLUMN_NOT_FOUND + column);
+            throw new IllegalArgumentException(UNKNOWN_ERROR + column);
         }
-        throw new IllegalArgumentException(Lang.COLUMN_NOT_FOUND + column);
+        throw new IllegalArgumentException(UNKNOWN_ERROR + column);
     }
 }

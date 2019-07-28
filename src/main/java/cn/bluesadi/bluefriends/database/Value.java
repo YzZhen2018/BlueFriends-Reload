@@ -20,10 +20,6 @@ public class Value{
         this.rawString = rawString;
     }
 
-    public String getRawString() {
-        return rawString;
-    }
-
     public String getRawString(String def) {
         return rawString == null ? def : rawString;
     }

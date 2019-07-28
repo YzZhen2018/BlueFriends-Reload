@@ -5,6 +5,7 @@ import cn.bluesadi.bluefriends.gui.GuiManager;
 import lk.vexview.gui.components.VexComponents;
 import lk.vexview.gui.components.VexTextField;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BluesTextField extends BluesComponent {
@@ -21,7 +22,7 @@ public class BluesTextField extends BluesComponent {
         this.w = w;
         this.h = h;
         this.maxString = maxString;
-        this.textField = new VexTextField(x,y,w,h,maxString,GuiManager.getIndex());
+        this.textField = new VexTextField(x,y,w,h,maxString,GuiManager.getInstance().getIndex());
     }
 
     public int getW() {
@@ -40,12 +41,16 @@ public class BluesTextField extends BluesComponent {
         return commands;
     }
 
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
+    }
+
     public String getTypedText(){
         return textField.getTypedText();
     }
 
     @Override
-    public void addToVexComponents(List<VexComponents> components) {
-        components.add(textField);
+    public List<VexComponents> asVexComponents() {
+        return Collections.singletonList(textField);
     }
 }

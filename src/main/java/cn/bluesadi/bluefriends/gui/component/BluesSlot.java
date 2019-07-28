@@ -5,6 +5,7 @@ import lk.vexview.gui.components.VexComponents;
 import lk.vexview.gui.components.VexSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BluesSlot extends BluesComponent {
@@ -23,7 +24,7 @@ public class BluesSlot extends BluesComponent {
     }
 
     @Override
-    public void addToVexComponents(List<VexComponents> components) {
-        components.add(new VexSlot(id,x,y,item));
+    public List<VexComponents> asVexComponents() {
+        return Collections.singletonList(new VexSlot(id,x,y,item));
     }
 }

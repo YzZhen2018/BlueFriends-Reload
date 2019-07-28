@@ -2,13 +2,13 @@ package cn.bluesadi.bluefriends.database;
 
 import cn.bluesadi.bluefriends.database.config.DBLogger;
 import cn.bluesadi.bluefriends.database.config.Lang;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import static cn.bluesadi.bluefriends.database.config.Lang.*;
 
 /**
  * 表示数据库中的一个表
@@ -48,7 +48,7 @@ abstract public class Table {
                     ("alter table " + name + " add column "+column+" TEXT(10000)")) {
                 return statement.execute();
             } catch (SQLException e) {
-                DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+                DBLogger.error(UNKNOWN_ERROR);
                 e.printStackTrace();
             }
         }
@@ -65,7 +65,7 @@ abstract public class Table {
                     ("alter table " + name + " drop column "+column)) {
                 return statement.execute();
             } catch (SQLException e) {
-                DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+                DBLogger.error(UNKNOWN_ERROR);
                 e.printStackTrace();
             }
         }
@@ -84,7 +84,7 @@ abstract public class Table {
                 rows.add(new Row(this,resultSet.getString(mainKey)));
             }
         } catch (SQLException e) {
-            DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
         return rows;
@@ -103,7 +103,7 @@ abstract public class Table {
                 rows.add(new Row(this,resultSet.getString(mainKey)));
             }
         } catch (SQLException e) {
-            DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
         return rows;
@@ -131,12 +131,12 @@ abstract public class Table {
     /**
      * 删除某一行
      * */
-    public boolean removeRow(String mainVaule){
+    public boolean removeRow(String mainValue){
         try (PreparedStatement statement = connection.prepareStatement
-                ("DELETE * FROM "+name+" WHERE "+mainKey+" = "+mainVaule)) {
+                ("DELETE FROM "+name+" WHERE "+mainKey+" = "+mainValue)) {
             return statement.execute();
         } catch (SQLException e) {
-            DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
         return false;

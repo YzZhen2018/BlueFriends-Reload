@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import static cn.bluesadi.bluefriends.database.config.Lang.*;
 
 public class Row{
     private static final Gson GSON = new Gson();
@@ -43,10 +44,10 @@ public class Row{
                 return resultSet.getString(column);
             }
         }catch (SQLException e){
-            DBLogger.error(Lang.COLUMN_NOT_FOUND+column);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
-        throw new IllegalArgumentException(Lang.COLUMN_NOT_FOUND+column);
+        return null;
     }
     /**
      * 判断一个列是否存在
@@ -106,7 +107,7 @@ public class Row{
                 e.printStackTrace();
             }
         }else {
-            throw new IllegalArgumentException(Lang.COLUMN_NOT_FOUND+column);
+             DBLogger.error(UNKNOWN_ERROR);
         }
     }
     /**
@@ -133,7 +134,7 @@ public class Row{
                 ("DELETE FROM "+table+" WHERE "+ mainKey +"='"+mainValue+"'")){
             return statement.execute();
         }catch (SQLException e){
-            DBLogger.error(Lang.ERROR_EXECUTE_STATEMENT);
+            DBLogger.error(UNKNOWN_ERROR);
             e.printStackTrace();
         }
         return false;

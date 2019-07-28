@@ -3,6 +3,9 @@ package cn.bluesadi.bluefriends.commands;
 import cn.bluesadi.bluefriends.BFDatabase;
 import cn.bluesadi.bluefriends.config.Config;
 import cn.bluesadi.bluefriends.config.Message;
+import cn.bluesadi.bluefriends.gui.GuiManager;
+import cn.bluesadi.bluefriends.player.BFPlayer;
+import cn.bluesadi.bluefriends.util.BFUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,9 +19,10 @@ public class BFReload implements CommandExecutor {
             Message.load();//重载message.yml
             BFDatabase.getInstance().close();//重新连接数据库
             BFDatabase.load();
-            sender.sendMessage(Message.RELOAD_COMPLETED);
+            GuiManager.loadGuiManager();
+            BFUtil.sendMessageBox(sender,Message.RELOAD_COMPLETED);
         }else{
-            sender.sendMessage(Message.NO_PERMISSION);
+            BFUtil.sendMessageBox(sender,Message.NO_PERMISSION);
         }
         return false;
     }

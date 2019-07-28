@@ -2,12 +2,11 @@ package cn.bluesadi.bluefriends.database;
 
 import cn.bluesadi.bluefriends.database.config.DBLogger;
 import cn.bluesadi.bluefriends.database.config.Lang;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import static cn.bluesadi.bluefriends.database.config.Lang.ERROR_CONNECT_DATABASE;
+import static cn.bluesadi.bluefriends.database.config.Lang.*;
 
 /**
  * 数据库连接对象
@@ -101,7 +100,7 @@ public class DataBase{
                 connection.setCatalog(schema);
                 return Schema.connect(connection);
             } catch (SQLException e) {
-                DBLogger.error(ERROR_CONNECT_DATABASE);
+                DBLogger.error(UNKNOWN_ERROR);
                 e.printStackTrace();
             }
         }else if(dataBaseType.equals(DataBaseType.SQLITE)){
@@ -109,7 +108,7 @@ public class DataBase{
                 Connection connection = DriverManager.getConnection(url);
                 return Schema.connect(connection);
             } catch (SQLException e) {
-                DBLogger.error(ERROR_CONNECT_DATABASE);
+                DBLogger.error(UNKNOWN_ERROR);
                 e.printStackTrace();
             }
         }
@@ -134,7 +133,7 @@ public class DataBase{
                 return false;
             }
         }else {
-            throw new IllegalArgumentException(Lang.CREATE_SCHEMA_NOT_SUPPORTED+dataBaseType.getName());
+            throw new IllegalArgumentException(UNKNOWN_ERROR);
         }
     }
 }
