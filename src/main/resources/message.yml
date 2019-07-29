@@ -32,7 +32,7 @@ send_friend_request: '&b提示&8>> &a成功向玩家&e%player%&a发送好友申�
 #当玩家收到好友请求时收到的消息
 receive_friend_request: '&b提示&8>> &a玩家&e%player%申请添加你为好友'
 #当玩家使用/friend accept [玩家]指令,且该玩家并没有申请添加好友时发送的消息
-player_not_request: '&b提示&8>> &c玩家&e%player%&c没有申请添加你为好友&'
+player_not_request: '&b提示&8>> &c玩家&e%player%&c没有申请添加你为好友'
 #当玩家使用/friend accept [玩家]指令同意添加某玩家为好友时发送的消息
 accept_friend_request: '&b提示&8>> &a你同意了玩家&e%player%&a的好友申请'
 #当玩家使用/friend accept [玩家]指令拒绝添加某玩家为好友时发送的消息

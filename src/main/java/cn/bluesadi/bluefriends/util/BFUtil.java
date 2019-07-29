@@ -9,6 +9,11 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,5 +86,10 @@ public class BFUtil {
             return UUID.fromString(BlueFriends.getBFDatabase().getFakePlayerTable().getRow(name).getValue("uuid").getString());
         }
         return Bukkit.getOfflinePlayer(name).getUniqueId();
+    }
+
+    public static void mkdirs(String dir){
+        File file = new File(BlueFriends.getInstance().getDataFolder(),dir);
+        file.mkdirs();
     }
 }

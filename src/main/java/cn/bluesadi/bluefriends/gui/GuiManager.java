@@ -35,7 +35,23 @@ public class GuiManager {
         loadGuiMap();
     }
 
+    private static void saveResource(String path){
+        BlueFriends.getInstance().saveResource(path,false);
+    }
+
     public static void loadGuiManager(){
+        BFUtil.mkdirs("gui");
+        saveResource("gui/好友列表.yml");
+        saveResource("gui/好友申请.yml");
+        saveResource("gui/我的邮箱.yml");
+        saveResource("gui/查看邮件.yml");
+        saveResource("gui/查询好友.yml");
+        saveResource("gui/玩家信息.yml");
+        saveResource("gui/系统消息.yml");
+        saveResource("gui/编辑信息.yml");
+        saveResource("gui/编辑邮件.yml");
+        saveResource("gui/自定义编辑.yml");
+        saveResource("gui/邮件列表.yml");
         instance = new GuiManager();
     }
 
@@ -203,7 +219,7 @@ public class GuiManager {
     }
 
     public void loadGuiMap(){
-        BlueFriends.getInstance().saveResource("map.yml",false);
+        saveResource("map.yml");
         File mapFile = new File(BlueFriends.getInstance().getDataFolder(),"map.yml");
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(mapFile);
         configuration.getKeys(false).forEach(key->guiMap.put(key,configuration.getString(key)));

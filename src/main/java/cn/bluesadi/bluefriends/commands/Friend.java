@@ -5,6 +5,7 @@ import cn.bluesadi.bluefriends.gui.BluesGui;
 import cn.bluesadi.bluefriends.player.BFPlayer;
 import cn.bluesadi.bluefriends.util.BFLogger;
 import cn.bluesadi.bluefriends.util.BFUtil;
+import com.sun.org.apache.bcel.internal.generic.NOP;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -32,16 +33,14 @@ public class Friend implements CommandExecutor {
                             OfflinePlayer off = Bukkit.getOfflinePlayer(BFUtil.getPlayerUUID(args[1]));
                             gui.getComponents().forEach(bluesComponent -> {
                                 Function<String, String> f = bluesComponent.getPlaceholderFunction();
-                                bluesComponent.setPlaceholderFunction(raw ->f.apply(PlaceholderAPI.
+                                bluesComponent.setPlaceholderFunction(raw -> f.apply(PlaceholderAPI.
                                         setPlaceholders(off, raw)));
                             });
                             gui.open();
                         }else{
-                            BFUtil.sendMessageBox(sender,PLAYER_NOT_EXISTS);
+                            BFUtil.sendMessageBox(sender, NO_PERMISSION);
                         }
-                        return false;
-                    }
-                    if (args[0].equalsIgnoreCase("apply")) {
+                    }else if (args[0].equalsIgnoreCase("apply")) {
                         if(BFUtil.existsFakePlayer(args[1])){
                             BFPlayer another = BFPlayer.getBFPlayer(BFUtil.getPlayerUUID(args[1]));
                             if (player.hasPermission("bluefriends.fakeplayer.apply")) {

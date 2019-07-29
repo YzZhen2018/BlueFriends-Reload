@@ -4,6 +4,9 @@ package cn.bluesadi.bluefriends.database;
 import cn.bluesadi.bluefriends.BlueFriends;
 import cn.bluesadi.bluefriends.config.Config;
 
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+
 /**
  * @author bluesad
  * */
@@ -12,10 +15,10 @@ public class DBManager {
     private Schema schema;
     private String schemaName;
 
-    public DBManager(String schema){
+    public DBManager(String schema) throws SQLException {
         String type = Config.DATABASE_TYPE;
         boolean mysql = type.equalsIgnoreCase("MYSQL");
-        String url = "";
+        String url;
         String user = Config.DATABASE_USER;
         String password = Config.DATABASE_PASSWORD;
         if(mysql){

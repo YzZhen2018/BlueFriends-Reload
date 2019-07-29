@@ -81,9 +81,11 @@ public class MailEditor {
         if(checkNull()){
             sqlRow.set(SUBJECT,subject);
             sqlRow.set(DATE,"暂未发送");
-            sqlRow.set(ITEMS,items);
+            if(!items.isEmpty()) {
+                sqlRow.set(ITEMS,items);
+            }
             sqlRow.set(CONTENT,content);
-            sqlRow.set(READ, "");
+            sqlRow.set(READ, Collections.EMPTY_LIST);
             sqlRow.set(GOT_ITEMS,Collections.EMPTY_LIST);
         }
         return false;

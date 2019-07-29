@@ -6,6 +6,12 @@ import cn.bluesadi.bluefriends.database.Table;
 import cn.bluesadi.bluefriends.mail.Mail;
 import cn.bluesadi.bluefriends.mail.MailAttributes;
 import cn.bluesadi.bluefriends.player.MessageAttributes;
+import cn.bluesadi.bluefriends.util.BFLogger;
+import org.bukkit.Bukkit;
+
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+
 import static cn.bluesadi.bluefriends.player.PlayerAttributes.*;
 
 public class BFDatabase {
@@ -18,7 +24,7 @@ public class BFDatabase {
     private Table messageTable;
     private Table fakePlayerTable;
 
-    private BFDatabase(){
+    private BFDatabase() throws SQLException{
         instance = this;
         dbManager = new DBManager("bluefriends");
         schema = instance.dbManager.getSchema();
@@ -36,8 +42,18 @@ public class BFDatabase {
         fakePlayerTable.setMainKey("name");
     }
 
-    public static void load(){
-        instance = new BFDatabase();
+    public static boolean load(){
+        try{
+            instance = new BFDatabase();
+            return true;
+        }catch (SQLException e){
+            if(e.getMessage().startsWith("Access denied")){
+                BFLogger.error("用于连接数据库的用户名或密码错误,请检查你的配置");
+            }else {
+                BFLogger.error("在连接数据库时出现了异常", e);
+            }
+            return false;
+        }
     }
 
     public static BFDatabase getInstance(){

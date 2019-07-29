@@ -2,6 +2,9 @@ package cn.bluesadi.bluefriends.database;
 
 import cn.bluesadi.bluefriends.database.config.DBLogger;
 import cn.bluesadi.bluefriends.database.config.Lang;
+
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -92,25 +95,15 @@ public class DataBase{
      * @param schema 数据库名称,如果是SQLite随便输一个值都可以
      * @return 数据库对象
      * */
-    public Schema getSchema(String schema){
+    public Schema getSchema(String schema) throws SQLException {
         if(dataBaseType.equals(DataBaseType.MYSQL)) {
-            try {
-                Connection connection = DriverManager.getConnection(url,user,password);
-                createSchema(connection,schema);
-                connection.setCatalog(schema);
-                return Schema.connect(connection);
-            } catch (SQLException e) {
-                DBLogger.error(UNKNOWN_ERROR);
-                e.printStackTrace();
-            }
+            Connection connection = DriverManager.getConnection(url,user,password);
+            createSchema(connection,schema);
+            connection.setCatalog(schema);
+            return Schema.connect(connection);
         }else if(dataBaseType.equals(DataBaseType.SQLITE)){
-            try {
-                Connection connection = DriverManager.getConnection(url);
-                return Schema.connect(connection);
-            } catch (SQLException e) {
-                DBLogger.error(UNKNOWN_ERROR);
-                e.printStackTrace();
-            }
+            Connection connection = DriverManager.getConnection(url);
+            return Schema.connect(connection);
         }
         return null;
     }
