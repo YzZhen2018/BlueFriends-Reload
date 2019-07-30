@@ -26,7 +26,8 @@ public class DefaultPermissions {
             "bluefriends.friend.query",
             "bluefriends.friend.accept",
             "bluefriends.friend.reject",
-            "bluefriends.fakeplayer.apply"
+            "bluefriends.fakeplayer.apply",
+            "bluefriends.open.*"
     };
 
     public static int register(){

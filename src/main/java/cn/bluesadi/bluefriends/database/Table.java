@@ -97,7 +97,7 @@ abstract public class Table {
     public List<Row> getRows(String condition){
         List<Row> rows = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement
-                ("SELECT * FROM " + name + " WHERE "+condition)) {
+                ("SELECT * FROM " + name + " WHERE '"+condition+"'")) {
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
                 rows.add(new Row(this,resultSet.getString(mainKey)));
@@ -133,7 +133,7 @@ abstract public class Table {
      * */
     public boolean removeRow(String mainValue){
         try (PreparedStatement statement = connection.prepareStatement
-                ("DELETE FROM "+name+" WHERE "+mainKey+" = "+mainValue)) {
+                ("DELETE FROM "+name+" WHERE "+mainKey+" = '"+mainValue+"'")) {
             return statement.execute();
         } catch (SQLException e) {
             DBLogger.error(UNKNOWN_ERROR);

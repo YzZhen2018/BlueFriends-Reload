@@ -1,5 +1,5 @@
 name: BlueFriends
-version: 1.0.0
+version: 1.0.4
 main: cn.bluesadi.bluefriends.BlueFriends
 softdepend:
   - VexView

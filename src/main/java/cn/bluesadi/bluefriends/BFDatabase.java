@@ -79,8 +79,4 @@ public class BFDatabase {
     public void close(){
         dbManager.close();
     }
-
-    public static void main(String[] args) {
-        System.out.println(java.util.UUID.randomUUID());
-    }
 }

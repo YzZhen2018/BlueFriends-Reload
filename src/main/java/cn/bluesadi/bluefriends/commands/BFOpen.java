@@ -17,13 +17,19 @@ public class BFOpen implements CommandExecutor {
         if(args.length >= 1) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (sender.hasPermission("bluefriends.open.*") || sender.hasPermission("bluefriends.open." + args[0])) {
-                    BluesGui gui = BlueFriends.getGuiManager().createGui(args[0],player);
-                    if(gui != null){
-                        gui.open();
+                if (sender.hasPermission("bluefriends.open.*")) {
+                    if(!sender.hasPermission("-bluefriends.open."+args[0]) || sender.isOp()) {
+                        BluesGui gui = BlueFriends.getGuiManager().createGui(args[0], player);
+                        if (gui != null) {
+                            gui.open();
+                        } else {
+                            sender.sendMessage(GUI_NOT_FOUND.replaceAll("%gui%", args[0]));
+                        }
                     }else{
-                        sender.sendMessage(GUI_NOT_FOUND.replaceAll("%gui%",args[0]));
+                        sender.sendMessage(NO_PERMISSION);
                     }
+                }else{
+                    sender.sendMessage(NO_PERMISSION);
                 }
             } else {
                 sender.sendMessage(PLAYER_ONLY);

@@ -41,6 +41,7 @@ public class GuiManager {
 
     public static void loadGuiManager(){
         BFUtil.mkdirs("gui");
+        saveResource("gui/MessageBox.yml");
         saveResource("gui/好友列表.yml");
         saveResource("gui/好友申请.yml");
         saveResource("gui/我的邮箱.yml");

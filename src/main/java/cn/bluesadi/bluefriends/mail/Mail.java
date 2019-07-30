@@ -67,5 +67,10 @@ public class Mail {
 
     public void delete(){
         BFDatabase.getInstance().getMailTable().removeRow(uuid.toString());
+        BlueFriends.getBFPlayers().forEach(bfPlayer -> {
+            if(bfPlayer.hasMail(uuid.toString())){
+                bfPlayer.deleteMail(uuid);
+            }
+        });
     }
 }

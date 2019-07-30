@@ -27,9 +27,10 @@ public class BFPlayer {
         if(BFUtil.existsPlayer(uuid)) {
             fake = false;
             if (!sqlRow.existsRow()) {
+                OfflinePlayer off = getOfflinePlayer();
                 setBCOnline(false);
                 setEmail(Config.DEFAULT_EMAIL);
-                setNickname(getOfflinePlayer().getName());
+                setNickname(off.getName());
                 setQQ(Config.DEFAULT_QQ);
                 setSex(Config.DEFAULT_SEX);
                 setHead(Config.DEFAULT_HEAD);
@@ -41,6 +42,7 @@ public class BFPlayer {
                 sqlRow.set(HEAD_LIST, Config.DEFAULT_HEAD_LIST);
                 sqlRow.set(HEAD_BORDER_LIST, Config.DEFAULT_HEAD_BORDER_LIST);
                 sqlRow.set(MAIL_BOX, Config.DEFAULT_MAIL_BOX);
+                sqlRow.set(NAME,off.getName());
             }
         }else{
             fake = true;
@@ -91,8 +93,12 @@ public class BFPlayer {
         if(isBCOnline()){
             if(isOnline()){
                 BluesGui box = GuiManager.getInstance().createGui(Config.MESSAGE_BOX,getPlayer());
-                box.getComponents().forEach(c -> c.setPlaceholderFunction(raw -> PlaceholderAPI.setPlaceholders(getOfflinePlayer(),raw).replaceAll("%system_message%",msg)));
-                box.open();
+                if(box != null) {
+                    box.getComponents().forEach(c -> c.setPlaceholderFunction(raw -> PlaceholderAPI.setPlaceholders(getOfflinePlayer(), raw).replaceAll("%system_message%", msg)));
+                    box.open();
+                }else{
+                    sendMessage("无法找到配置文件:"+Config.MESSAGE_BOX);
+                }
             }else{
                 BFUtil.sendPluginMessage(getName(),msg);
             }
@@ -172,24 +178,24 @@ public class BFPlayer {
     public List<BFPlayer> getFriendList(){
         List<String> friends = sqlRow.getValue(FRIEND_LIST).getStringList();
         List<BFPlayer> result = new ArrayList<>();
-        friends.forEach(uuid->result.add(new BFPlayer(java.util.UUID.fromString(uuid))));
+        friends.forEach(name->result.add(new BFPlayer(BFUtil.getPlayerUUID(name))));
         return result;
     }
 
     public void addFriend(BFPlayer bfPlayer){
         List<String> friends = sqlRow.getValue(FRIEND_LIST).getStringList();
-        friends.add(bfPlayer.getUUID().toString());
+        friends.add(bfPlayer.getName());
         sqlRow.set(FRIEND_LIST,friends);
     }
 
     public void removeFriend(BFPlayer bfPlayer){
         List<String> friends = sqlRow.getValue(FRIEND_LIST).getStringList();
-        friends.remove(bfPlayer.getUUID().toString());
+        friends.remove(bfPlayer.getName());
         sqlRow.set(FRIEND_LIST, friends);
     }
 
     public boolean hasFriend(BFPlayer bfPlayer){
-        return sqlRow.getValue(FRIEND_LIST).getStringList().contains(bfPlayer.getUUID().toString());
+        return sqlRow.getValue(FRIEND_LIST).getStringList().contains(bfPlayer.getName());
     }
 
     public boolean hasMail(String uuid){
@@ -203,23 +209,23 @@ public class BFPlayer {
     public List<BFPlayer> getRequesterList(){
         List<String> requesterList = sqlRow.getValue(REQUESTER_LIST).getStringList();
         List<BFPlayer> result = new ArrayList<>();
-        requesterList.forEach(uuid->result.add(new BFPlayer(java.util.UUID.fromString(uuid))));
+        requesterList.forEach(name->result.add(new BFPlayer(BFUtil.getPlayerUUID(name))));
         return result;
     }
 
     public boolean hasRequester(BFPlayer bfPlayer){
-        return sqlRow.getValue(REQUESTER_LIST).getStringList().contains(bfPlayer.getUUID().toString());
+        return sqlRow.getValue(REQUESTER_LIST).getStringList().contains(bfPlayer.getName());
     }
 
     public void addRequester(BFPlayer bfPlayer){
         List<String> requesters = sqlRow.getValue(REQUESTER_LIST).getStringList();
-        requesters.add(bfPlayer.getUUID().toString());
+        requesters.add(bfPlayer.getName());
         sqlRow.set(REQUESTER_LIST,requesters);
     }
 
     public void removeRequester(BFPlayer bfPlayer){
         List<String> requesters = sqlRow.getValue(REQUESTER_LIST).getStringList();
-        requesters.remove(bfPlayer.getUUID().toString());
+        requesters.remove(bfPlayer.getName());
         sqlRow.set(REQUESTER_LIST, requesters);
     }
 

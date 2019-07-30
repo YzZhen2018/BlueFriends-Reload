@@ -134,4 +134,26 @@ components:
         y: 33
         w: 200
         h: 1
-        url: '[local]BlueFriends/分界线(半透明).png'      
+        url: '[local]BlueFriends/分界线(半透明).png'
+      同意:
+        type: 'button'
+        name: '&8拒绝'
+        x: 40
+        y: 23
+        w: 18
+        h: 10
+        url1: '[local]BlueFriends/按钮/返回按钮.png'
+        url2: '[local]BlueFriends/按钮/返回按钮_悬浮.png'
+        commands:
+          - 'friend accept %bluefriends_name%'
+      拒绝:
+        type: 'button'
+        name: '&8拒绝'
+        x: 58
+        y: 23
+        w: 18
+        h: 10
+        url1: '[local]BlueFriends/按钮/返回按钮.png'
+        url2: '[local]BlueFriends/按钮/返回按钮_悬浮.png'
+        commands:
+          - 'friend reject %bluefriends_name%'
