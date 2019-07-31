@@ -7,18 +7,21 @@ import cn.bluesadi.bluefriends.gui.BluesGui;
 import cn.bluesadi.bluefriends.gui.GuiManager;
 import cn.bluesadi.bluefriends.mail.Mail;
 import cn.bluesadi.bluefriends.util.BFCalendar;
+import cn.bluesadi.bluefriends.util.BFLogger;
 import cn.bluesadi.bluefriends.util.BFUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.io.PrintStream;
 import java.util.*;
 import static cn.bluesadi.bluefriends.player.PlayerAttributes.*;
 
 public class BFPlayer {
 
     protected UUID uuid;
-    protected Row sqlRow;
+    private Row sqlRow;
     private boolean fake;
 
     protected BFPlayer(UUID uuid){
@@ -27,26 +30,39 @@ public class BFPlayer {
         if(BFUtil.existsPlayer(uuid)) {
             fake = false;
             if (!sqlRow.existsRow()) {
-                OfflinePlayer off = getOfflinePlayer();
-                setBCOnline(false);
-                setEmail(Config.DEFAULT_EMAIL);
-                setNickname(off.getName());
-                setQQ(Config.DEFAULT_QQ);
-                setSex(Config.DEFAULT_SEX);
-                setHead(Config.DEFAULT_HEAD);
-                setSignature(Config.DEFAULT_SIGNATURE);
-                setHeadBorder(Config.DEFAULT_HEAD_BORDER);
-                sqlRow.set(FRIEND_LIST, Config.DEFAULT_FRIEND_LIST);
-                sqlRow.set(REQUESTER_LIST, Collections.EMPTY_LIST);
-                sqlRow.set(MESSAGE_LIST, Config.DEFAULT_MESSAGE_LIST);
-                sqlRow.set(HEAD_LIST, Config.DEFAULT_HEAD_LIST);
-                sqlRow.set(HEAD_BORDER_LIST, Config.DEFAULT_HEAD_BORDER_LIST);
-                sqlRow.set(MAIL_BOX, Config.DEFAULT_MAIL_BOX);
-                sqlRow.set(NAME,off.getName());
+                init();
             }
+            check();
         }else{
             fake = true;
         }
+    }
+
+    private void check(){
+        String test = getHead();
+        if(test == null || test.isEmpty()){
+            init();
+            BFLogger.error("玩家§e"+getName()+"§c数据异常，现已将玩家的数据重置");
+        }
+    }
+
+    private void init(){
+        OfflinePlayer off = getOfflinePlayer();
+        setBCOnline(false);
+        setEmail(Config.DEFAULT_EMAIL);
+        setNickname(off.getName());
+        setQQ(Config.DEFAULT_QQ);
+        setSex(Config.DEFAULT_SEX);
+        setHead(Config.DEFAULT_HEAD);
+        setSignature(Config.DEFAULT_SIGNATURE);
+        setHeadBorder(Config.DEFAULT_HEAD_BORDER);
+        sqlRow.set(FRIEND_LIST, Config.DEFAULT_FRIEND_LIST);
+        sqlRow.set(REQUESTER_LIST, Collections.EMPTY_LIST);
+        sqlRow.set(MESSAGE_LIST, Config.DEFAULT_MESSAGE_LIST);
+        sqlRow.set(HEAD_LIST, Config.DEFAULT_HEAD_LIST);
+        sqlRow.set(HEAD_BORDER_LIST, Config.DEFAULT_HEAD_BORDER_LIST);
+        sqlRow.set(MAIL_BOX, Config.DEFAULT_MAIL_BOX);
+        sqlRow.set(NAME,off.getName());
     }
 
     public static BFPlayer getBFPlayer(UUID uuid){

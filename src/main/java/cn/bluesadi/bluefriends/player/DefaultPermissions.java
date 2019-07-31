@@ -1,9 +1,6 @@
 package cn.bluesadi.bluefriends.player;
 
 
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-
 public class DefaultPermissions {
     
     private static final String[] permissions = new String[]{
@@ -27,13 +24,14 @@ public class DefaultPermissions {
             "bluefriends.friend.accept",
             "bluefriends.friend.reject",
             "bluefriends.fakeplayer.apply",
-            "bluefriends.open.*"
+            "bluefriends.open.*",
+            "-bluefriends.open.邮件列表.yml"
     };
 
     public static int register(){
-        for(String permission : permissions){
-            new Permission(permission).setDefault(PermissionDefault.TRUE);
-        }
+        /*for(String permission : permissions){
+            Bukkit.getPluginManager().getPermission(permission).setDefault(PermissionDefault.TRUE);
+        }*/
         return permissions.length;
     }
     

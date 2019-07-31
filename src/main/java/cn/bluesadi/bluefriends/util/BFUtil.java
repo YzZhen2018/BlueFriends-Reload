@@ -39,7 +39,7 @@ public class BFUtil {
     }
 
     public static boolean hasPermission(Player player, String str){
-        if(str == null){
+        if(str == null || player.isOp()){
             return true;
         }
         if(str.startsWith("-")){

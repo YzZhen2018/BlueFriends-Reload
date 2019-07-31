@@ -8,10 +8,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Message {
 
     private static FileConfiguration message;
+
+    public static String VERSION;
+
     public static String NO_PERMISSION;
     public static String ARGUMENTS_WRONG;
     public static String PLAYER_ONLY;
@@ -57,52 +63,63 @@ public class Message {
     public static String SET_SEX_SUCCESS;
     public static String SET_NICKNAME_SUCCESS;
     public static String SET_SIGNATURE_SUCCESS;
+    
+    public static List<String> JOIN;
 
 
+    private static String getString(String path){
+        return BFUtil.color(message.getString(path,"<无法在message.yml中找到"+path+"选项>"));
+    }
+
+    private static List<String> getStringList(String path){
+        return BFUtil.color(message.getStringList(path));
+    }
 
     public static void load(){
         BlueFriends.getInstance().saveResource("message.yml",false);
         message = YamlConfiguration.loadConfiguration(new File(BlueFriends.getInstance().getDataFolder(),"message.yml"));
-        NO_PERMISSION = BFUtil.color(message.getString("no_permission","&c发生啥事?"));
-        ARGUMENTS_WRONG = BFUtil.color(message.getString("arguments_wrong","&c发生啥事?"));
-        PLAYER_ONLY = BFUtil.color(message.getString("player_only","&c发生啥事?"));
-        PLAYER_NOT_EXISTS = BFUtil.color(message.getString("player_not_exists","&c发生啥事?"));
-        RELOAD_COMPLETED = BFUtil.color(message.getString("reload_completed","&c发生啥事?"));
-        HAS_BEEN_REQUESTER = BFUtil.color(message.getString("has_been_requester","&c发生啥事?"));
-        HAS_BEEN_FRIEND = BFUtil.color(message.getString("has_been_friend","&c发生啥事?"));
-        SEND_FRIEND_REQUEST = BFUtil.color(message.getString("send_friend_request","&c发生啥事?"));
-        RECEIVE_FRIEND_REQUEST = BFUtil.color(message.getString("receive_friend_request","&c发生啥事?"));
-        PLAYER_NOT_REQUEST = BFUtil.color(message.getString("player_not_request","&c发生啥事?"));
-        ACCEPT_FRIEND_REQUEST = BFUtil.color(message.getString("accept_friend_request","&c发生啥事?"));
-        REJECT_FRIEND_REQUEST = BFUtil.color(message.getString("reject_friend_request","&c发生啥事?"));
-        FRIEND_REQUEST_ACCEPTED = BFUtil.color(message.getString("friend_request_accepted","&c发生啥事?"));
-        FRIEND_REQUEST_REJECTED = BFUtil.color(message.getString("friend_request_rejected","&c发生啥事?"));
-        DELETE_PLAYER_NO_FRIEND = BFUtil.color(message.getString("delete_player_no_friend","&c发生啥事?"));
-        DELETE_FRIEND_SUCCESS = BFUtil.color(message.getString("delete_friend_success","&c发生啥事?"));
-        DELETED_BY_FRIEND = BFUtil.color(message.getString("deleted_by_friend","&c发生啥事?"));
-        GUI_NOT_FOUND = BFUtil.color(message.getString("gui_not_found","&c发生啥事?"));
-        SEND_SYSTEM_MESSAGE_SUCCESS = BFUtil.color(message.getString("send_system_message_success","&c发生啥事?"));
-        MAIL_NOT_EXISTS = BFUtil.color(message.getString("mail_not_exists","&c发生啥事?"));
-        SYSTEM_MESSAGE_NOT_EXISTS = BFUtil.color(message.getString("system_message_not_exists","&c发生啥事?"));
-        RECEIVE_SYSTEM_MESSAGE = BFUtil.color(message.getString("receive_system_message","&c发生啥事?"));
-        SEND_MAIL_SUCCESS = BFUtil.color(message.getString("send_mail_success","&c发生啥事?"));
-        RECEIVE_MAIL = BFUtil.color(message.getString("receive_mail","&c发生啥事?"));
-        CREATE_FAKE_PLAYER_SUCCESS = BFUtil.color(message.getString("create_fake_player_success","&c发生啥事?"));
-        REMOVE_FAKE_PLAYER_SUCCESS = BFUtil.color(message.getString("remove_fake_player_success","&c发生啥事?"));
-        FAKE_PLAYER_EXISTED = BFUtil.color(message.getString("fake_player_existed","发生啥事?"));
-        FAKE_PLAYER_NOT_EXISTED = BFUtil.color(message.getString("fake_player_not_existed","发生啥事?"));
-        SET_EMAIL_SUCCESS = BFUtil.color(message.getString("set_email_success","发生啥事?"));
-        SET_QQ_SUCCESS = BFUtil.color(message.getString("set_qq_success","发生啥事?"));
-        SET_SEX_SUCCESS = BFUtil.color(message.getString("set_sex_success","发生啥事?"));
-        SET_HEAD_SUCCESS = BFUtil.color(message.getString("set_head_success","发生啥事?"));
-        SET_HEAD_BORDER_SUCCESS = BFUtil.color(message.getString("set_headborder_success","发生啥事?"));
-        SET_NICKNAME_SUCCESS = BFUtil.color(message.getString("set_nickname_success","发生啥事?"));
-        SET_SIGNATURE_SUCCESS = BFUtil.color(message.getString("set_signature_success","发生啥事?"));
-        CANT_APPLY_SELF = BFUtil.color(message.getString("cant_apply_self","发生啥事?"));
-        NO_ENOUGH_SPACE = BFUtil.color(message.getString("no_enough_space","发生啥事?"));
-        GET_ITEMS_SUCCESS = BFUtil.color(message.getString("get_items_success","发生啥事?"));
-        GET_ITEMS_FAIL = BFUtil.color(message.getString("get_items_fail","发生啥事?"));
-        SAVE_MAIL_SUCCESS = BFUtil.color(message.getString("save_mail_success","发生啥事?"));
-        CONDITION_WRONG = BFUtil.color(message.getString("condition_wrong","发生啥事?"));
+        VERSION = message.getString("version","1.0");
+        NO_PERMISSION = getString("no_permission");
+        ARGUMENTS_WRONG = getString("arguments_wrong");
+        PLAYER_ONLY = getString("player_only");
+        PLAYER_NOT_EXISTS = getString("player_not_exists");
+        RELOAD_COMPLETED = getString("reload_completed");
+        HAS_BEEN_REQUESTER = getString("has_been_requester");
+        HAS_BEEN_FRIEND = getString("has_been_friend");
+        SEND_FRIEND_REQUEST = getString("send_friend_request");
+        RECEIVE_FRIEND_REQUEST = getString("receive_friend_request");
+        PLAYER_NOT_REQUEST = getString("player_not_request");
+        ACCEPT_FRIEND_REQUEST = getString("accept_friend_request");
+        REJECT_FRIEND_REQUEST = getString("reject_friend_request");
+        FRIEND_REQUEST_ACCEPTED = getString("friend_request_accepted");
+        FRIEND_REQUEST_REJECTED = getString("friend_request_rejected");
+        DELETE_PLAYER_NO_FRIEND = getString("delete_player_no_friend");
+        DELETE_FRIEND_SUCCESS = getString("delete_friend_success");
+        DELETED_BY_FRIEND = getString("deleted_by_friend");
+        GUI_NOT_FOUND = getString("gui_not_found");
+        SEND_SYSTEM_MESSAGE_SUCCESS = getString("send_system_message_success");
+        MAIL_NOT_EXISTS = getString("mail_not_exists");
+        SYSTEM_MESSAGE_NOT_EXISTS = getString("system_message_not_exists");
+        RECEIVE_SYSTEM_MESSAGE = getString("receive_system_message");
+        SEND_MAIL_SUCCESS = getString("send_mail_success");
+        RECEIVE_MAIL = getString("receive_mail");
+        CREATE_FAKE_PLAYER_SUCCESS = getString("create_fake_player_success");
+        REMOVE_FAKE_PLAYER_SUCCESS = getString("remove_fake_player_success");
+        FAKE_PLAYER_EXISTED = getString("fake_player_existed");
+        FAKE_PLAYER_NOT_EXISTED = getString("fake_player_not_existed");
+        SET_EMAIL_SUCCESS = getString("set_email_success");
+        SET_QQ_SUCCESS = getString("set_qq_success");
+        SET_SEX_SUCCESS = getString("set_sex_success");
+        SET_HEAD_SUCCESS = getString("set_head_success");
+        SET_HEAD_BORDER_SUCCESS = getString("set_headborder_success");
+        SET_NICKNAME_SUCCESS = getString("set_nickname_success");
+        SET_SIGNATURE_SUCCESS = getString("set_signature_success");
+        CANT_APPLY_SELF = getString("cant_apply_self");
+        NO_ENOUGH_SPACE = getString("no_enough_space");
+        GET_ITEMS_SUCCESS = getString("get_items_success");
+        GET_ITEMS_FAIL = getString("get_items_fail");
+        SAVE_MAIL_SUCCESS = getString("save_mail_success");
+        CONDITION_WRONG = getString("condition_wrong");
+        JOIN = getStringList("join");
     }
 }

@@ -26,6 +26,8 @@ import java.util.UUID;
 public final class BlueFriends extends JavaPlugin {
 
     private static BlueFriends instance;
+    private static final String CURRENT_CONFIG_VERSION = "1.0";
+    private static final String CURRENT_MESSAGE_VERSION = "1.1";
 
     @Override
     public void onEnable() {
@@ -43,6 +45,7 @@ public final class BlueFriends extends JavaPlugin {
             BFUtil.mkdirs("error");
             Config.load();
             Message.load();
+            checkVersion();
             BFLogger.info("正在加载GUI配置文件...");
             GuiManager.loadGuiManager();
             BFLogger.info("正在连接数据库...");
@@ -97,6 +100,19 @@ public final class BlueFriends extends JavaPlugin {
         }
         BFLogger.error(name+"未装载!");
         return false;
+    }
+
+    private void checkVersion(){
+        if(!Config.VERSION.equals(CURRENT_CONFIG_VERSION)){
+            BFLogger.error("检测到配置文件config.yml版本不正确，这可能会导致一些配置无法正常使用");
+            BFLogger.error("当前的版本为:"+CURRENT_CONFIG_VERSION+"，请删除config.yml让插件重新生成");
+            BFLogger.error("或自行修改config.yml的内容并将version选项修改为:"+CURRENT_CONFIG_VERSION);
+        }
+        if(!Message.VERSION.equalsIgnoreCase(CURRENT_MESSAGE_VERSION)){
+            BFLogger.error("检测到配置文件message.yml版本不正确，这可能会导致一些文本无法正常显示");
+            BFLogger.error("当前的版本为:"+CURRENT_MESSAGE_VERSION+"，请删除message.yml让插件重新生成");
+            BFLogger.error("或自行修改message.yml的内容并将version选项修改为:"+CURRENT_MESSAGE_VERSION);
+        }
     }
 
     @Override
@@ -170,7 +186,7 @@ public final class BlueFriends extends JavaPlugin {
                 }else if(params.equalsIgnoreCase("requesters_number")){
                     return String.valueOf(bfPlayer.getRequesterList().size());
                 }
-                return "%bluefriends_"+params+"%";
+                return "%bluefriends_"+params+"%变量解析失败";
             }
         }));
     }

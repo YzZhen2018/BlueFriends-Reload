@@ -14,6 +14,7 @@ public class Config {
     public static String CHANNEL_BUNGEE_TO_BUKKIT = "bf:bungee_to_bukkit";
 
     private static FileConfiguration config;
+    public static String VERSION;
     public static String DATABASE_TYPE;
     public static String DATABASE_URL;
     public static String DATABASE_USER;
@@ -47,6 +48,7 @@ public class Config {
     public static void load(){
         BlueFriends.getInstance().saveResource("config.yml",false);
         config = YamlConfiguration.loadConfiguration(new File(BlueFriends.getInstance().getDataFolder(),"config.yml"));
+        VERSION = config.getString("version","1.0");
         ConfigurationSection databaseSection = config.getConfigurationSection("Database");
         DATABASE_TYPE = databaseSection.getString("type");
         DATABASE_URL = databaseSection.getString("url");
