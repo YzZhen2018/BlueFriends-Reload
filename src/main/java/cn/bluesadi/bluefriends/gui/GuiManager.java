@@ -11,6 +11,7 @@ import cn.bluesadi.bluefriends.player.BFPlayer;
 import cn.bluesadi.bluefriends.player.SystemMessage;
 import cn.bluesadi.bluefriends.util.BFLogger;
 import cn.bluesadi.bluefriends.util.BFUtil;
+import com.google.common.collect.Maps;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,11 +29,13 @@ public class GuiManager {
     private Map<UUID,BluesGui> openingGui = new HashMap<>();
     private Map<String, FileConfiguration> guiConfigurations = new HashMap<>();
     private Map<String,String> guiMap = new HashMap<>();
+    private Map<String,ComponentLoadingFunction> registeredComponentTypes = Maps.newHashMap();
 
 
     public GuiManager(){
         loadGuiConfigurations();
         loadGuiMap();
+        registerDefaultComponentTypes();
     }
 
     private static void saveResource(String path){
@@ -101,12 +104,10 @@ public class GuiManager {
         return components;
     }
 
-    private BluesComponent loadComponent(BluesGui gui,ConfigurationSection section){
-        int x = section.getInt("x");
-        int y = section.getInt("y");
-        String type = section.getString("type");
-        BluesComponent component = null;
-        if(type.equalsIgnoreCase(CompoentType.BUTTON)){
+    private void registerDefaultComponentTypes(){
+        registerComponentType(CompoentType.BUTTON, (gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             String name = section.getString("name","");
             String url1 = section.getString("url1");
             String url2 = section.getString("url2");
@@ -114,35 +115,52 @@ public class GuiManager {
             int h = section.getInt("h",9);
             List<String> commands = section.getStringList("commands");
             if(check(CompoentType.BUTTON,name,url1,url2)) {
-                component = new BluesButton(gui, x, y, name, url1, url2, w,h,commands);
+                return new BluesButton(gui, x, y, name, url1, url2, w,h,commands);
             }
-        }else if(type.equalsIgnoreCase(CompoentType.IMAGE)){
+            return null;
+        });
+        registerComponentType(CompoentType.IMAGE,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             String url = section.getString("url");
             int w = section.getInt("w",64);
             int h = section.getInt("h",64);
             if(check(CompoentType.IMAGE,url)) {
                 List<String> hoverTexts = section.getStringList("hover_texts");
                 if(!hoverTexts.isEmpty()) {
-                    component = new BluesImage(gui, x, y, url, w, h, hoverTexts);
+                    return new BluesImage(gui, x, y, url, w, h, hoverTexts);
                 }else{
-                    component = new BluesImage(gui, x, y, url, w, h);
+                    return new BluesImage(gui, x, y, url, w, h);
                 }
             }
-        }else if(type.equalsIgnoreCase(CompoentType.TEXT)){
+            return null;
+        });
+        registerComponentType(CompoentType.TEXT,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             List<String> contents = section.getStringList("contents");
             int linefeed = section.getInt("linefeed",0);
             int omit = section.getInt("omit",0);
-            component = new BluesText(gui,x,y,contents,linefeed,omit);
-        }else if(type.equalsIgnoreCase(CompoentType.TEXTFIELD)){
+            return new BluesText(gui,x,y,contents,linefeed,omit);
+        });
+        registerComponentType(CompoentType.TEXTFIELD,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             int w = section.getInt("w",80);
             int h = section.getInt("h",10);
             int maxString = section.getInt("maxString",100);
             List<String> commands = section.getStringList("commands");
-            component = new BluesTextField(gui,x,y,w,h,maxString,commands);
-        }else if(type.equalsIgnoreCase(CompoentType.PLAYER_DRAW)){
+            return new BluesTextField(gui,x,y,w,h,maxString,commands);
+        });
+        registerComponentType(CompoentType.PLAYER_DRAW,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             int size = section.getInt("size");
-            component = new BluesPlayerDraw(gui,x,y,size);
-        }else if(type.equalsIgnoreCase(CompoentType.SCROLLING_LIST)){
+            return new BluesPlayerDraw(gui,x,y,size);
+        });
+        registerComponentType(CompoentType.SCROLLING_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             int w = section.getInt("w",150);
             int h = section.getInt("h",400);
             int fullH = section.getInt("full_h",1200);
@@ -151,62 +169,95 @@ public class GuiManager {
                 component1.setX(component1.getX() + x);
                 component1.setY(component1.getY() + y);
             });
-            component = new BluesScrollingList(gui,x,y,w,h,fullH,components);
-        }else if(type.equalsIgnoreCase(CompoentType.FRIEND_LIST) || type.equalsIgnoreCase(CompoentType.MESSAGE_LIST)
-                || type.equalsIgnoreCase(CompoentType.MAIL_BOX) || type.equalsIgnoreCase(CompoentType.FAKE_PLAYER_LIST)
-                || type.equalsIgnoreCase(CompoentType.REQUESTER_LIST) || type.equalsIgnoreCase(CompoentType.SERVER_MAIL_LIST)){
+            return new BluesScrollingList(gui,x,y,w,h,fullH,components);
+        });
+        registerComponentType(CompoentType.FRIEND_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
             int w = section.getInt("w",150);
             int h = section.getInt("h",400);
-            if(type.equalsIgnoreCase(CompoentType.FRIEND_LIST)){
-                List<BFPlayer> friends = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getFriendList();
-                CollectionScrollingListFunction<BFPlayer> placeholder = (raw,friend) -> PlaceholderAPI.setPlaceholders(friend.getOfflinePlayer(),raw);
-                component = new CollectionScrollingList<>(gui,x,y,w,h,friends,section,placeholder);
-            }else if(type.equalsIgnoreCase(CompoentType.MESSAGE_LIST)){
-                List<SystemMessage> messageList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getMessageList();
-                CollectionScrollingListFunction<SystemMessage> placeholder = (raw,message) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
-                            .replaceAll("%message_uuid%",message.getUUID().toString())
-                            .replaceAll("%message_date%",message.getDate())
-                            .replaceAll("%message_content%",message.getContent());
+            List<BFPlayer> friends = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getFriendList();
+            CollectionScrollingListFunction<BFPlayer> placeholder = (raw,friend) -> PlaceholderAPI.setPlaceholders(friend.getOfflinePlayer(),raw);
+            return new CollectionScrollingList<>(gui,x,y,w,h,friends,section,placeholder);
+        });
+        registerComponentType(CompoentType.MAIL_BOX,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
+            int w = section.getInt("w",150);
+            int h = section.getInt("h",400);
+            List<Mail> mailList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getMailBox();
+            CollectionScrollingListFunction<Mail> placeholder = (raw,mail) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
+                    .replaceAll("%mail_uuid%",mail.getUUID().toString())
+                    .replaceAll("%mail_date%",mail.getDate())
+                    .replaceAll("%mail_subject%",mail.getSubject())
+                    .replaceAll("%mail_content%",mail.getContent())
+                    .replaceAll("%mail_read%",mail.isRead(BFPlayer.getBFPlayer(gui.getViewer().getUniqueId())) ? Config.READ : Config.NOT_READ)
+                    .replaceAll("%mail_items%",String.valueOf(mail.getItems().size()));
+            return new CollectionScrollingList<>(gui,x,y,w,h,mailList,section,placeholder);
+        });
+        registerComponentType(CompoentType.MESSAGE_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
+            int w = section.getInt("w",150);
+            int h = section.getInt("h",400);
+            List<SystemMessage> messageList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getMessageList();
+            CollectionScrollingListFunction<SystemMessage> placeholder = (raw,message) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
+                    .replaceAll("%message_uuid%",message.getUUID().toString())
+                    .replaceAll("%message_date%",message.getDate())
+                    .replaceAll("%message_content%",message.getContent());
 
-                component = new CollectionScrollingList<>(gui,x,y,w,h,messageList,section,placeholder);
-            }else if(type.equalsIgnoreCase(CompoentType.MAIL_BOX)){
-                List<Mail> mailList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getMailBox();
-                CollectionScrollingListFunction<Mail> placeholder = (raw,mail) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
-                        .replaceAll("%mail_uuid%",mail.getUUID().toString())
-                        .replaceAll("%mail_date%",mail.getDate())
-                        .replaceAll("%mail_subject%",mail.getSubject())
-                        .replaceAll("%mail_content%",mail.getContent())
-                        .replaceAll("%mail_read%",mail.isRead(BFPlayer.getBFPlayer(gui.getViewer().getUniqueId())) ? Config.READ : Config.NOT_READ)
-                        .replaceAll("%mail_items%",String.valueOf(mail.getItems().size()));
-                component = new CollectionScrollingList<>(gui,x,y,w,h,mailList,section,placeholder);
-            }else if(type.equalsIgnoreCase(CompoentType.FAKE_PLAYER_LIST)){
-                List<BFPlayer> fakePlayerList = new ArrayList<>();
-                BlueFriends.getBFDatabase().getFakePlayerTable().getRows().forEach(fakePlayer -> fakePlayerList
-                        .add(BFPlayer.getBFPlayer(BFUtil.getPlayerUUID(fakePlayer.getValue("name").getString()))));
-                CollectionScrollingListFunction<BFPlayer> placeholder = (raw,fake) -> PlaceholderAPI.setPlaceholders(fake.getOfflinePlayer(),raw);
-                component = new CollectionScrollingList<>(gui,x,y,w,h,fakePlayerList,section,placeholder);
-            }else if(type.equalsIgnoreCase(CompoentType.REQUESTER_LIST)){
-                List<BFPlayer> requesterList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getRequesterList();
-                CollectionScrollingListFunction<BFPlayer> placeholder = (raw,requester) -> PlaceholderAPI.setPlaceholders(requester.getOfflinePlayer(),raw);
-                component = new CollectionScrollingList<>(gui,x,y,w,h,requesterList,section,placeholder);
-            }else if(type.equalsIgnoreCase(CompoentType.SERVER_MAIL_LIST)){
-                List<Mail> mailList = BlueFriends.getServerMailList();
-                CollectionScrollingListFunction<Mail> placeholder = (raw,mail) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
-                        .replaceAll("%mail_uuid%",mail.getUUID().toString())
-                        .replaceAll("%mail_date%",mail.getDate())
-                        .replaceAll("%mail_subject%",mail.getSubject())
-                        .replaceAll("%mail_content%",mail.getContent())
-                        .replaceAll("%mail_read%",mail.isRead(BFPlayer.getBFPlayer(gui.getViewer().getUniqueId())) ? Config.READ : Config.NOT_READ)
-                        .replaceAll("%mail_items%",String.valueOf(mail.getItems().size()));
-                component = new CollectionScrollingList<>(gui,x,y,w,h,mailList,section,placeholder);
+            return new CollectionScrollingList<>(gui,x,y,w,h,messageList,section,placeholder);
+        });
+        registerComponentType(CompoentType.FAKE_PLAYER_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
+            int w = section.getInt("w",150);
+            int h = section.getInt("h",400);
+            List<BFPlayer> fakePlayerList = new ArrayList<>();
+            BlueFriends.getBFDatabase().getFakePlayerTable().getRows().forEach(fakePlayer -> fakePlayerList
+                    .add(BFPlayer.getBFPlayer(BFUtil.getPlayerUUID(fakePlayer.getValue("name").getString()))));
+            CollectionScrollingListFunction<BFPlayer> placeholder = (raw,fake) -> PlaceholderAPI.setPlaceholders(fake.getOfflinePlayer(),raw);
+            return new CollectionScrollingList<>(gui,x,y,w,h,fakePlayerList,section,placeholder);
+        });
+        registerComponentType(CompoentType.REQUESTER_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
+            int w = section.getInt("w",150);
+            int h = section.getInt("h",400);
+            List<BFPlayer> requesterList = BFPlayer.getBFPlayer(gui.getViewer().getUniqueId()).getRequesterList();
+            CollectionScrollingListFunction<BFPlayer> placeholder = (raw,requester) -> PlaceholderAPI.setPlaceholders(requester.getOfflinePlayer(),raw);
+            return new CollectionScrollingList<>(gui,x,y,w,h,requesterList,section,placeholder);
+        });
+        registerComponentType(CompoentType.SERVER_MAIL_LIST,(gui,section) ->{
+            int x = section.getInt("x");
+            int y = section.getInt("y");
+            int w = section.getInt("w",150);
+            int h = section.getInt("h",400);
+            List<Mail> mailList = BlueFriends.getServerMailList();
+            CollectionScrollingListFunction<Mail> placeholder = (raw,mail) -> PlaceholderAPI.setPlaceholders(gui.getViewer(),raw)
+                    .replaceAll("%mail_uuid%",mail.getUUID().toString())
+                    .replaceAll("%mail_date%",mail.getDate())
+                    .replaceAll("%mail_subject%",mail.getSubject())
+                    .replaceAll("%mail_content%",mail.getContent())
+                    .replaceAll("%mail_read%",mail.isRead(BFPlayer.getBFPlayer(gui.getViewer().getUniqueId())) ? Config.READ : Config.NOT_READ)
+                    .replaceAll("%mail_items%",String.valueOf(mail.getItems().size()));
+            return new CollectionScrollingList<>(gui,x,y,w,h,mailList,section,placeholder);
+        });
+    }
+
+    private BluesComponent loadComponent(BluesGui gui,ConfigurationSection section){
+        String type = section.getString("type");
+        ComponentLoadingFunction function = registeredComponentTypes.getOrDefault(type,null);
+        if(function != null){
+            BluesComponent component = function.load(gui,section);
+            if(component != null){
+                component.setPermission(section.getString("permission"));
+            }else {
+                BFLogger.error("§e" + type + "§c组件类型不存在,请检查你的配置!");
             }
+            return component;
         }
-        if(component != null){
-            component.setPermission(section.getString("permission"));
-        }else {
-            BFLogger.error("§e" + type + "§c组件类型不存在,请检查你的配置!");
-        }
-        return component;
+        return null;
     }
 
     public void loadGuiConfigurations(){
@@ -248,5 +299,9 @@ public class GuiManager {
 
     public static GuiManager getInstance() {
         return instance;
+    }
+
+    public void registerComponentType(String name,ComponentLoadingFunction function){
+        this.registeredComponentTypes.put(name,function);
     }
 }

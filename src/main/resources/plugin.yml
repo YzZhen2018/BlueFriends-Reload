@@ -27,7 +27,7 @@ permissions:
       default: true
     bluefriends.person.set.signature:
       default: true
-    bluefriends.person.editbox:
+    bluefriends.editbox:
       default: true
     bluefriends.mail.view:
       default: true

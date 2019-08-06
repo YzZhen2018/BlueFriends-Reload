@@ -9,13 +9,16 @@ import cn.bluesadi.bluefriends.mail.Mail;
 import cn.bluesadi.bluefriends.mail.MailEditor;
 import cn.bluesadi.bluefriends.player.BFPlayer;
 import cn.bluesadi.bluefriends.listener.PlayerListener;
-import cn.bluesadi.bluefriends.player.DefaultPermissions;
 import cn.bluesadi.bluefriends.util.BFLogger;
 import cn.bluesadi.bluefriends.util.BFUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
+import me.clip.placeholderapi.ServerLoadEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class BlueFriends extends JavaPlugin {
+public final class BlueFriends extends JavaPlugin implements Listener {
 
     private static BlueFriends instance;
     private static final String CURRENT_CONFIG_VERSION = "1.0";
@@ -46,8 +49,6 @@ public final class BlueFriends extends JavaPlugin {
             Config.load();
             Message.load();
             checkVersion();
-            BFLogger.info("正在加载GUI配置文件...");
-            GuiManager.loadGuiManager();
             BFLogger.info("正在连接数据库...");
             BFLogger.info("检测到数据库类型为:§e" + Config.DATABASE_TYPE);
             if (!BFDatabase.load()) {
@@ -55,8 +56,8 @@ public final class BlueFriends extends JavaPlugin {
                 disablePlugin();
                 return;
             }
-            BFLogger.info("正在分配默认权限...");
-            BFLogger.info("注册了" + DefaultPermissions.register() + "个默认权限");
+            //BFLogger.info("正在分配默认权限...");
+            //BFLogger.info("注册了" + DefaultPermissions.register() + "个默认权限");
             BFLogger.info("正在注册插件指令...");
             Bukkit.getPluginCommand("friend").setExecutor(new Friend());
             Bukkit.getPluginCommand("bfreload").setExecutor(new BFReload());
@@ -66,6 +67,7 @@ public final class BlueFriends extends JavaPlugin {
             BFLogger.info("正在注册插件监听器...");
             Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
             Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
+            Bukkit.getPluginManager().registerEvents(this, this);
             BFLogger.info("正在注册PlaceholderAPI变量");
             registerPlaceholderHook();
             if (Config.BUNGEECORD) {
@@ -79,6 +81,12 @@ public final class BlueFriends extends JavaPlugin {
             BFLogger.error("BlueFriends无法正常启动",e);
             disablePlugin();
         }
+    }
+
+    @EventHandler
+    public void onServerLoaded(ServerLoadEvent event){
+        BFLogger.info("正在导入GUI界面");
+        GuiManager.loadGuiManager();
     }
 
     private void disablePlugin(){

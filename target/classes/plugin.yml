@@ -12,3 +12,48 @@ commands:
   bfopen:
   bfadmin:
   person:
+permissions:
+    bluefriends.person.set.qq:
+      default: true
+    bluefriends.person.set.email:
+      default: true
+    bluefriends.person.set.sex:
+      default: true
+    bluefriends.person.set.nickname:
+      default: true
+    bluefriends.person.set.head:
+      default: true
+    bluefriends.person.set.headborder:
+      default: true
+    bluefriends.person.set.signature:
+      default: true
+    bluefriends.editbox:
+      default: true
+    bluefriends.mail.view:
+      default: true
+    bluefriends.mail.delete:
+      default: true
+    bluefriends.mail.read:
+      default: true
+    bluefriends.mail.items:
+      default: true
+    bluefriends.message.view:
+      default: true
+    bluefriends.message.delete:
+      default: true
+    bluefriends.friend.apply:
+      default: true
+    bluefriends.friend.delete:
+      default: true
+    bluefriends.friend.query:
+      default: true
+    bluefriends.friend.accept:
+      default: true
+    bluefriends.friend.reject:
+      default: true
+    bluefriends.fakeplayer.apply:
+      default: true
+    bluefriends.open.*:
+      default: true
+    -bluefriends.open.邮件列表.yml:
+      default: true

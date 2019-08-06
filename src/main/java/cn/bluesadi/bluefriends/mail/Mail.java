@@ -4,6 +4,7 @@ import cn.bluesadi.bluefriends.BFDatabase;
 import cn.bluesadi.bluefriends.BlueFriends;
 import cn.bluesadi.bluefriends.database.Row;
 import cn.bluesadi.bluefriends.player.BFPlayer;
+import cn.bluesadi.bluefriends.util.BFLogger;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,14 @@ public class Mail {
     public Mail(java.util.UUID uuid){
         this.uuid = uuid;
         this.row = BlueFriends.getBFDatabase().getMailTable().getRow(uuid.toString());
+        check();
+    }
+
+    private void check(){
+        String test = getContent();
+        if(test == null || test.isEmpty()){
+            BFLogger.error("邮件§e"+uuid+"§c数据异常，无法正确读取邮件信息");
+        }
     }
 
     public UUID getUUID() {

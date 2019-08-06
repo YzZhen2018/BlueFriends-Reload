@@ -1,6 +1,9 @@
 package cn.bluesadi.bluefriends.player;
 
 
+import org.bukkit.Bukkit;
+import org.bukkit.permissions.PermissionDefault;
+
 public class DefaultPermissions {
     
     private static final String[] permissions = new String[]{
@@ -11,7 +14,7 @@ public class DefaultPermissions {
             "bluefriends.person.set.head",
             "bluefriends.person.set.headborder",
             "bluefriends.person.set.signature",
-            "bluefriends.person.editbox",
+            "bluefriends.editbox",
             "bluefriends.mail.view",
             "bluefriends.mail.delete",
             "bluefriends.mail.read",
@@ -29,9 +32,9 @@ public class DefaultPermissions {
     };
 
     public static int register(){
-        /*for(String permission : permissions){
+        for(String permission : permissions){
             Bukkit.getPluginManager().getPermission(permission).setDefault(PermissionDefault.TRUE);
-        }*/
+        }
         return permissions.length;
     }
     
