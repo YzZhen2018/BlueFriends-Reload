@@ -92,7 +92,7 @@ public class Person implements CommandExecutor {
                     }
                     if(args[1].equalsIgnoreCase("view")){
                         if(size >= 3) {
-                            if(sender.hasPermission("bluefreinds.mail.view")) {
+                            if(sender.hasPermission("bluefriends.mail.view")) {
                                 String uuid = args[2];
                                 if (BFUtil.existsMail(uuid)) {
                                     Mail mail = new Mail(UUID.fromString(uuid));

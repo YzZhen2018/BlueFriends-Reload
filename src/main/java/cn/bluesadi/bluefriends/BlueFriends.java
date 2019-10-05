@@ -13,7 +13,6 @@ import cn.bluesadi.bluefriends.util.BFLogger;
 import cn.bluesadi.bluefriends.util.BFUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
-import me.clip.placeholderapi.ServerLoadEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -70,6 +69,8 @@ public final class BlueFriends extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().registerEvents(this, this);
             BFLogger.info("正在注册PlaceholderAPI变量");
             registerPlaceholderHook();
+            BFLogger.info("正在导入GUI界面");
+            GuiManager.loadGuiManager();
             if (Config.BUNGEECORD) {
                 BFLogger.info("检测到BungeeCord选项开启,设定该服务端为群组端子端");
                 BFLogger.info("正在注册通信频道...");
@@ -81,12 +82,6 @@ public final class BlueFriends extends JavaPlugin implements Listener {
             BFLogger.error("BlueFriends无法正常启动",e);
             disablePlugin();
         }
-    }
-
-    @EventHandler
-    public void onServerLoaded(ServerLoadEvent event){
-        BFLogger.info("正在导入GUI界面");
-        GuiManager.loadGuiManager();
     }
 
     private void disablePlugin(){

@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Bluefriends\</name>
+    <name>Bluefriends</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -24,8 +24,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>\${java.version}</source>
-                    <target>\${java.version}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
